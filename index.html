@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Treino Pedro</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f2f1ed;
+  --white: #ffffff;
+  --border: #e2dfd8;
+  --border2: #ccc9c2;
+  --green: #2a5e2a;
+  --green-bg: #edf4ed;
+  --green-border: #b8d4b8;
+  --orange: #b85c00;
+  --red: #b83030;
+  --red-bg: #fceeed;
+  --red-border: #ecc4c4;
+  --text: #1c1c1a;
+  --text2: #4a4845;
+  --muted: #8c8a84;
+  --muted2: #ccc9c2;
+  --shadow: 0 1px 3px rgba(0,0,0,0.07), 0 3px 10px rgba(0,0,0,0.04);
+  --r: 12px;
+  --r-sm: 8px;
+}
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+html, body { min-height:100%; background:var(--bg); }
+body { font-family:'DM Sans',sans-serif; color:var(--text); font-size:15px; }
+
+.nav {
+  position:sticky; top:0; z-index:50;
+  background:rgba(242,241,237,0.97); backdrop-filter:blur(8px);
+  border-bottom:1px solid var(--border);
+  padding:10px 16px 0;
+}
+.nav-top { display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; }
+.nav-title { font-family:'Bebas Neue',sans-serif; font-size:20px; letter-spacing:.06em; color:var(--green); }
+.nav-date { font-family:'DM Mono',monospace; font-size:10px; color:var(--muted); letter-spacing:.08em; text-transform:uppercase; }
+.nav-prog-btn {
+  background:var(--white); border:1px solid var(--border2); border-radius:var(--r-sm);
+  padding:6px 12px; font-family:'DM Mono',monospace; font-size:10px; color:var(--muted);
+  letter-spacing:.06em; text-transform:uppercase; cursor:pointer;
+}
+.nav-prog-btn:active { background:var(--green-bg); color:var(--green); }
+
+.day-tabs { display:flex; gap:4px; padding-bottom:10px; }
+.day-tab {
+  flex:1; text-align:center; padding:7px 4px;
+  font-family:'DM Mono',monospace; font-size:11px; letter-spacing:.08em; text-transform:uppercase;
+  color:var(--muted); border-radius:var(--r-sm); cursor:pointer; border:1px solid transparent;
+  transition:all .18s; background:transparent;
+}
+.day-tab.active { background:var(--green); color:#fff; border-color:var(--green); }
+.day-tab.today:not(.active) { border-color:var(--green-border); color:var(--green); background:var(--green-bg); }
+
+.wrap { max-width:480px; margin:0 auto; padding:14px 14px 60px; }
+
+.day-header { margin-bottom:14px; }
+.day-name { font-family:'Bebas Neue',sans-serif; font-size:30px; letter-spacing:.04em; line-height:1; }
+.day-sub { font-size:12.5px; color:var(--muted); margin-top:3px; }
+.day-time { font-family:'DM Mono',monospace; font-size:11px; color:var(--orange); margin-top:2px; }
+
+.pbar-wrap { display:flex; align-items:center; gap:8px; margin-top:10px; }
+.pbar-track { flex:1; background:var(--border); border-radius:100px; height:4px; }
+.pbar-fill { background:var(--green); border-radius:100px; height:4px; transition:width .3s; }
+.pbar-label { font-family:'DM Mono',monospace; font-size:10px; color:var(--muted); white-space:nowrap; }
+
+.sec-title {
+  font-family:'DM Mono',monospace; font-size:10px; letter-spacing:.15em; text-transform:uppercase;
+  color:var(--muted); padding:14px 0 7px; border-bottom:1px solid var(--border); margin-bottom:8px;
+}
+
+.mob-item {
+  display:flex; align-items:flex-start; gap:12px;
+  padding:10px 0; border-bottom:1px solid var(--border); cursor:pointer;
+}
+.mob-item:last-child { border-bottom:none; }
+.mob-check {
+  width:22px; height:22px; border-radius:6px; border:2px solid var(--muted2);
+  flex-shrink:0; display:flex; align-items:center; justify-content:center; margin-top:1px;
+  transition:all .16s;
+}
+.mob-item.done .mob-check { background:var(--green); border-color:var(--green); }
+.mob-item.done .mob-check::after { content:'✓'; font-size:12px; font-weight:700; color:#fff; }
+.mob-item.done .mob-text { color:var(--muted); text-decoration:line-through; }
+.mob-text { font-size:13.5px; line-height:1.4; }
+
+.ex-card {
+  background:var(--white); border:1px solid var(--border); border-radius:var(--r);
+  box-shadow:var(--shadow); padding:13px 14px; margin-bottom:9px;
+  transition: border-color .2s;
+}
+.ex-card.saved { border-color:var(--green-border); }
+.ex-name { font-weight:600; font-size:14.5px; margin-bottom:2px; }
+.ex-spec { font-size:12px; color:var(--muted); margin-bottom:8px; }
+.ex-alert {
+  font-size:12px; color:var(--red); background:var(--red-bg);
+  border:1px solid var(--red-border); border-radius:6px;
+  padding:5px 9px; margin-bottom:8px;
+}
+.last-val {
+  font-family:'DM Mono',monospace; font-size:11.5px; color:var(--muted);
+  margin-bottom:8px;
+}
+.last-val strong { color:var(--green); font-weight:500; }
+
+.inp-row { display:flex; align-items:center; gap:8px; }
+.inp-field {
+  background:var(--bg); border:1.5px solid var(--border2); border-radius:var(--r-sm);
+  padding:10px 12px; font-size:18px; color:var(--text); font-family:'DM Mono',monospace;
+  text-align:center; width:100px; transition:border-color .16s, background .16s;
+  -moz-appearance:textfield;
+}
+.inp-field::-webkit-outer-spin-button,
+.inp-field::-webkit-inner-spin-button { -webkit-appearance:none; }
+.inp-field:focus { outline:none; border-color:var(--green); background:#fff; }
+.inp-field.saved-field { border-color:var(--green-border); background:var(--green-bg); color:var(--green); }
+.inp-unit { font-size:13px; color:var(--muted); }
+.saved-hint {
+  font-family:'DM Mono',monospace; font-size:11px; color:var(--green);
+  display:none; align-items:center; gap:4px;
+}
+.saved-hint.show { display:flex; }
+
+.reset-btn {
+  width:100%; margin-top:14px; background:transparent; border:1px solid var(--border);
+  border-radius:var(--r-sm); padding:10px; font-family:'DM Mono',monospace;
+  font-size:10px; color:var(--muted); letter-spacing:.1em; text-transform:uppercase; cursor:pointer;
+}
+.reset-btn:active { border-color:var(--red); color:var(--red); }
+
+/* PROGRESSO */
+.prog-overlay {
+  display:none; position:fixed; inset:0; z-index:200;
+  background:var(--bg); overflow-y:auto;
+}
+.prog-overlay.open { display:block; }
+.prog-nav {
+  position:sticky; top:0; background:rgba(242,241,237,0.97); backdrop-filter:blur(8px);
+  border-bottom:1px solid var(--border); padding:12px 16px;
+  display:flex; align-items:center; gap:12px;
+}
+.prog-back {
+  background:var(--white); border:1px solid var(--border2); border-radius:var(--r-sm);
+  padding:6px 12px; font-family:'DM Mono',monospace; font-size:10px; color:var(--muted);
+  letter-spacing:.06em; text-transform:uppercase; cursor:pointer;
+}
+.prog-title { font-family:'Bebas Neue',sans-serif; font-size:20px; letter-spacing:.06em; }
+.prog-wrap { max-width:480px; margin:0 auto; padding:14px 14px 60px; }
+.prog-ex-block { margin-bottom:20px; }
+.prog-ex-name { font-weight:600; font-size:13.5px; margin-bottom:7px; color:var(--green); }
+.prog-row { display:flex; justify-content:space-between; align-items:center; padding:6px 0; border-bottom:1px solid var(--border); }
+.prog-row:last-child { border-bottom:none; }
+.prog-val { font-family:'DM Mono',monospace; font-size:13px; }
+.prog-date { font-family:'DM Mono',monospace; font-size:11px; color:var(--muted); }
+.empty { text-align:center; padding:60px 20px; color:var(--muted); font-size:13.5px; }
+
+/* TOAST */
+.toast {
+  position:fixed; bottom:20px; left:50%; transform:translateX(-50%) translateY(10px);
+  background:var(--green); color:#fff; border-radius:100px;
+  padding:9px 20px; font-family:'DM Mono',monospace; font-size:11.5px; font-weight:600;
+  letter-spacing:.05em; z-index:999; opacity:0; transition:all .22s; pointer-events:none;
+}
+.toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+
+<div class="nav">
+  <div class="nav-top">
+    <div>
+      <div class="nav-title">PEDRO TREINA</div>
+      <div class="nav-date" id="navDate">—</div>
+    </div>
+    <button class="nav-prog-btn" onclick="openProg()">📈 Progresso</button>
+  </div>
+  <div class="day-tabs">
+    <div class="day-tab" data-key="A" onclick="showDay('A')">SEG</div>
+    <div class="day-tab" data-key="B" onclick="showDay('B')">TER</div>
+    <div class="day-tab" data-key="C" onclick="showDay('C')">QUI</div>
+    <div class="day-tab" data-key="D" onclick="showDay('D')">SEX</div>
+  </div>
+</div>
+
+<div class="wrap" id="dayContent"></div>
+
+<div class="prog-overlay" id="progOverlay">
+  <div class="prog-nav">
+    <button class="prog-back" onclick="closeProg()">← Voltar</button>
+    <div class="prog-title">Progresso</div>
+  </div>
+  <div class="prog-wrap" id="progContent"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+// ── SUPABASE ──
+const SUPABASE_URL     = 'https://halohgdnnhmgzmnptyil.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhhbG9oZ2RubmhtZ3ptbnB0eWlsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc5ODI2ODUsImV4cCI6MjA5MzU1ODY4NX0.36jpWxsyNXoKDWNDZDfSTmc8GpS-LfzIQ1NWIjZ-Qvg';
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+// ── TREINO DATA ──
+const MOB_DIA1 = [
+  { id:'m1_1', text:'Mobilidade de braços — rotações e círculos com bastão' },
+  { id:'m1_2', text:'Espaldar — Glúteo (canela paralela à barra, abrindo o quadril)' },
+  { id:'m1_3', text:'Espaldar — Panturrilha' },
+  { id:'m1_4', text:'Espaldar — Adutor' },
+  { id:'m1_5', text:'Espaldar — Posterior de coxa' },
+  { id:'m1_6', text:'Mobilidade de joelho — avanço semi-flexionado + sentar sobre a outra perna' },
+];
+
+const MOB_DIA2 = [
+  { id:'m2_1', text:'Mobilidade de braços — rotações e círculos com bastão' },
+  { id:'m2_2', text:'Espaldar — Glúteo (canela paralela à barra, abrindo o quadril)' },
+  { id:'m2_3', text:'Espaldar — Panturrilha' },
+  { id:'m2_4', text:'Espaldar — Abertura de pernas sentado' },
+  { id:'m2_5', text:'Espaldar — Pernas esticadas sentado, tocando as pontas dos pés' },
+  { id:'m2_6', text:'Mobilidade de joelho — avanço semi-flexionado + sentar sobre a outra perna' },
+];
+
+const TREINOS = {
+  A: {
+    label:'TREINO A', diaSemana:'Segunda-feira', mob: MOB_DIA1,
+    exercicios:[
+      { id:'a_abdom',    name:'Abdominal com Peso',              type:'weight', spec:'3×12–15' },
+      { id:'a_ext_iso',  name:'Cadeira Extensora — Isometria',   type:'time',   spec:'2×40s + 3×10 reps', alert:'⚠ Dir: 0°→60° máx. Esq: amplitude completa.' },
+      { id:'a_legpress', name:'Leg Press Unilateral Esquerdo',   type:'weight', spec:'4×12 · equalização' },
+      { id:'a_supino',   name:'Supino Reto com Barra',           type:'weight', spec:'4×8', alert:'⚠ Pare se sentir dor no ombro D.' },
+      { id:'a_barra',    name:'Barra Fixa',                      type:'reps',   spec:'4×máx' },
+    ]
+  },
+  B: {
+    label:'TREINO B', diaSemana:'Terça-feira', mob: MOB_DIA2,
+    exercicios:[
+      { id:'b_elevacao', name:'Elevação de Pernas na Barra',      type:'reps',   spec:'3×12' },
+      { id:'b_agach',    name:'Agachamento Unipodal no Banco',    type:'weight', spec:'3×10 / perna' },
+      { id:'b_flexora',  name:'Cadeira Flexora',                  type:'weight', spec:'3×12 · bilateral' },
+      { id:'b_remada',   name:'Remada Inclinada com Barra',       type:'weight', spec:'4×8' },
+      { id:'b_desenv',   name:'Desenvolvimento Halteres Sentado', type:'weight', spec:'3×10', alert:'⚠ Amplitude controlada no ombro D.' },
+    ]
+  },
+  C: {
+    label:'TREINO C', diaSemana:'Quinta-feira', mob: MOB_DIA1,
+    exercicios:[
+      { id:'c_prancha',  name:'Prancha Frontal',           type:'time',   spec:'3×40s' },
+      { id:'c_dead',     name:'Deadlift Convencional',     type:'weight', spec:'4×6 · carga pesada' },
+      { id:'c_legpress', name:'Leg Press Bilateral',       type:'weight', spec:'4×10 · não travar joelho D' },
+      { id:'c_supino',   name:'Supino Inclinado Máquina',  type:'weight', spec:'3×12' },
+      { id:'c_remada',   name:'Remada Sentada Fechada',    type:'weight', spec:'3×12' },
+    ]
+  },
+  D: {
+    label:'TREINO D', diaSemana:'Sexta-feira', mob: MOB_DIA2,
+    exercicios:[
+      { id:'d_abdom_lat', name:'Abdominal Lateral (Oblíquo)',      type:'reps',   spec:'3×12 / lado' },
+      { id:'d_ext_iso',   name:'Cadeira Extensora — Isometria',    type:'time',   spec:'2×40s + 3×10 reps', alert:'⚠ Dir: 0°→60° máx.' },
+      { id:'d_stiff',     name:'Stiff com Barra',                  type:'weight', spec:'4×10' },
+      { id:'d_lateral',   name:'Levantamento Lateral Halteres',    type:'weight', spec:'3×15' },
+      { id:'d_rosca',     name:'Rosca Alternada Halteres',         type:'weight', spec:'3×12' },
+      { id:'d_triceps',   name:'Tríceps Corda na Polia',           type:'weight', spec:'3×12' },
+    ]
+  }
+};
+
+// ── DATAS ──
+const today    = new Date();
+const todayStr = today.toISOString().split('T')[0];
+const DOW      = today.getDay();
+const KEY_MAP  = { 1:'A', 2:'B', 4:'C', 5:'D' };
+
+function todayKey() { return KEY_MAP[DOW] || null; }
+
+function fmtDate(ds) {
+  const d = new Date(ds + 'T12:00:00');
+  return d.toLocaleDateString('pt-BR', { day:'2-digit', month:'2-digit' });
+}
+
+// ── SUPABASE DATA ──
+async function getChecks(tk) {
+  const { data } = await sb.from('checks')
+    .select('item_id, done')
+    .eq('date', todayStr)
+    .eq('training_key', tk);
+  const result = {};
+  (data || []).forEach(r => { result[r.item_id] = r.done; });
+  return result;
+}
+
+async function saveCheck(tk, id, val) {
+  await sb.from('checks').upsert(
+    { date: todayStr, training_key: tk, item_id: id, done: val },
+    { onConflict: 'date,item_id' }
+  );
+}
+
+async function getVal(date, exId) {
+  const { data } = await sb.from('exercise_logs')
+    .select('value')
+    .eq('date', date)
+    .eq('exercise_id', exId)
+    .limit(1);
+  return data && data.length > 0 ? data[0].value : null;
+}
+
+async function saveVal(date, exId, v) {
+  await sb.from('exercise_logs').upsert(
+    { date, exercise_id: exId, value: v },
+    { onConflict: 'date,exercise_id' }
+  );
+}
+
+async function getLastEntry(exId) {
+  const { data } = await sb.from('exercise_logs')
+    .select('date, value')
+    .eq('exercise_id', exId)
+    .lt('date', todayStr)
+    .order('date', { ascending: false })
+    .limit(1);
+  return data && data.length > 0 ? { date: data[0].date, val: data[0].value } : null;
+}
+
+// ── RENDER ──
+let currentKey = null;
+
+async function showDay(key) {
+  currentKey = key;
+  window.scrollTo(0, 0);
+
+  document.querySelectorAll('.day-tab').forEach(t => {
+    const k = t.dataset.key;
+    t.classList.toggle('active', k === key);
+    t.classList.toggle('today', k === todayKey() && k !== key);
+  });
+
+  document.getElementById('dayContent').innerHTML =
+    '<div class="empty" style="padding-top:40px">Carregando...</div>';
+
+  const T = TREINOS[key];
+
+  const [checks, exResults] = await Promise.all([
+    getChecks(key),
+    Promise.all(T.exercicios.map(ex =>
+      Promise.all([getVal(todayStr, ex.id), getLastEntry(ex.id)])
+    ))
+  ]);
+
+  const todayVals  = {};
+  const lastEntries = {};
+  T.exercicios.forEach((ex, i) => {
+    todayVals[ex.id]   = exResults[i][0];
+    lastEntries[ex.id] = exResults[i][1];
+  });
+
+  const mobTotal = T.mob.length;
+  const mobDone  = T.mob.filter(m => checks[m.id]).length;
+  const pct      = Math.round(mobDone / mobTotal * 100);
+
+  let html = `
+    <div class="day-header">
+      <div class="day-name">${T.label}</div>
+      <div class="day-sub">${T.diaSemana}</div>
+      <div class="day-time">6:20 → 7:30</div>
+      <div class="pbar-wrap">
+        <div class="pbar-track"><div class="pbar-fill" id="pbarFill" style="width:${pct}%"></div></div>
+        <span class="pbar-label" id="pbarLabel">${mobDone}/${mobTotal} alongamentos</span>
+      </div>
+    </div>
+
+    <div class="sec-title">Alongamento & Mobilidade · 17 min</div>
+    <div id="mobList">
+      ${T.mob.map(m => `
+        <div class="mob-item${checks[m.id] ? ' done' : ''}" id="mob_${m.id}" onclick="toggleMob('${key}','${m.id}')">
+          <div class="mob-check"></div>
+          <div class="mob-text">${m.text}</div>
+        </div>
+      `).join('')}
+    </div>
+
+    <div class="sec-title">Exercícios · ~53 min</div>
+  `;
+
+  T.exercicios.forEach(ex => {
+    const last     = lastEntries[ex.id];
+    const todayVal = todayVals[ex.id];
+    const hasSaved = todayVal !== null && todayVal !== undefined;
+    const unit     = ex.type === 'time' ? 'seg' : ex.type === 'reps' ? 'reps' : 'kg';
+    const inputmode = ex.type === 'weight' ? 'decimal' : 'numeric';
+
+    const lastHtml = last
+      ? `<div class="last-val">Último: <strong>${last.val} ${unit}</strong> · ${fmtDate(last.date)}</div>`
+      : `<div class="last-val" style="color:var(--muted2)">Primeiro registro</div>`;
+
+    html += `
+      <div class="ex-card${hasSaved ? ' saved' : ''}" id="excard_${ex.id}">
+        <div class="ex-name">${ex.name}</div>
+        <div class="ex-spec">${ex.spec}</div>
+        ${ex.alert ? `<div class="ex-alert">${ex.alert}</div>` : ''}
+        ${lastHtml}
+        <div class="inp-row">
+          <input
+            type="number"
+            class="inp-field${hasSaved ? ' saved-field' : ''}"
+            id="inp_${ex.id}"
+            placeholder="${unit}"
+            inputmode="${inputmode}"
+            value="${hasSaved ? todayVal : ''}"
+            onblur="autoSave('${ex.id}','${ex.type}',this)"
+            onkeydown="if(event.key==='Enter'){this.blur()}"
+          >
+          <span class="inp-unit">${unit}</span>
+          <span class="saved-hint${hasSaved ? ' show' : ''}" id="hint_${ex.id}">✓ salvo</span>
+        </div>
+      </div>`;
+  });
+
+  html += `<button class="reset-btn" onclick="resetDay('${key}')">↺ resetar dia</button>`;
+  document.getElementById('dayContent').innerHTML = html;
+}
+
+// ── AÇÕES ──
+async function toggleMob(tk, id) {
+  const el   = document.getElementById('mob_' + id);
+  const done = el.classList.toggle('done');
+  await saveCheck(tk, id, done);
+
+  const T      = TREINOS[tk];
+  const checks = await getChecks(tk);
+  const total  = T.mob.length;
+  const d      = T.mob.filter(m => checks[m.id]).length;
+
+  const fill = document.getElementById('pbarFill');
+  const lbl  = document.getElementById('pbarLabel');
+  if (fill) fill.style.width = Math.round(d / total * 100) + '%';
+  if (lbl)  lbl.textContent  = `${d}/${total} alongamentos`;
+}
+
+async function autoSave(exId, type, inputEl) {
+  const val = parseFloat(inputEl.value);
+  if (!val || val <= 0) return;
+
+  await saveVal(todayStr, exId, val);
+
+  inputEl.classList.add('saved-field');
+  const card = document.getElementById('excard_' + exId);
+  if (card) card.classList.add('saved');
+  const hint = document.getElementById('hint_' + exId);
+  if (hint) hint.classList.add('show');
+
+  toast('✓ Salvo');
+}
+
+async function resetDay(tk) {
+  if (!confirm('Resetar os registros de hoje para este treino?')) return;
+
+  const exIds = TREINOS[tk].exercicios.map(ex => ex.id);
+  await Promise.all([
+    sb.from('checks').delete()
+      .eq('date', todayStr)
+      .eq('training_key', tk),
+    sb.from('exercise_logs').delete()
+      .eq('date', todayStr)
+      .in('exercise_id', exIds),
+  ]);
+
+  await showDay(tk);
+  toast('↺ Dia resetado');
+}
+
+// ── PROGRESSO ──
+async function openProg() {
+  document.getElementById('progOverlay').classList.add('open');
+  document.getElementById('progContent').innerHTML =
+    '<div class="empty">Carregando...</div>';
+
+  const { data } = await sb.from('exercise_logs')
+    .select('date, exercise_id, value')
+    .order('date', { ascending: false });
+
+  const exMap = {};
+  Object.values(TREINOS).forEach(T =>
+    T.exercicios.forEach(ex => { exMap[ex.id] = { name: ex.name, type: ex.type }; })
+  );
+
+  const byEx = {};
+  (data || []).forEach(row => {
+    const ex = exMap[row.exercise_id];
+    if (!ex) return;
+    if (!byEx[ex.name]) byEx[ex.name] = { type: ex.type, entries: [] };
+    byEx[ex.name].entries.push({ date: row.date, val: row.value });
+  });
+
+  const priority = [
+    'Cadeira Extensora — Isometria',
+    'Leg Press Unilateral Esquerdo', 'Leg Press Bilateral',
+    'Deadlift Convencional', 'Supino Reto com Barra',
+    'Agachamento Unipodal no Banco', 'Stiff com Barra'
+  ];
+
+  const keys = Object.keys(byEx).length === 0 ? [] :
+    [...priority.filter(k => byEx[k]), ...Object.keys(byEx).filter(k => !priority.includes(k))];
+
+  document.getElementById('progContent').innerHTML = keys.length === 0
+    ? `<div class="empty">Nenhum registro ainda.<br>Comece hoje!</div>`
+    : keys.map(name => {
+        const { type, entries } = byEx[name];
+        const unit = type === 'time' ? 'seg' : type === 'reps' ? 'reps' : 'kg';
+        return `<div class="prog-ex-block">
+          <div class="prog-ex-name">${name}</div>
+          ${entries.slice(0, 10).map(e => `
+            <div class="prog-row">
+              <span class="prog-val">${e.val} ${unit}</span>
+              <span class="prog-date">${fmtDate(e.date)}</span>
+            </div>`).join('')}
+        </div>`;
+      }).join('');
+}
+
+function closeProg() {
+  document.getElementById('progOverlay').classList.remove('open');
+}
+
+// ── TOAST ──
+let _tt;
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  clearTimeout(_tt);
+  _tt = setTimeout(() => t.classList.remove('show'), 1800);
+}
+
+// ── INIT ──
+const DIAS_PT = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
+document.getElementById('navDate').textContent =
+  `${DIAS_PT[DOW]} · ${today.toLocaleDateString('pt-BR', { day:'2-digit', month:'2-digit', year:'2-digit' })}`;
+
+document.querySelectorAll('.day-tab').forEach(t => {
+  if (t.dataset.key === todayKey()) t.classList.add('today');
+});
+
+showDay(todayKey() || 'A');
+</script>
+</body>
+</html>
