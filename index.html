@@ -101,13 +101,15 @@ body { font-family:'DM Sans',sans-serif; color:var(--text); font-size:15px; }
   border:1px solid var(--red-border); border-radius:6px;
   padding:5px 9px; margin-bottom:8px;
 }
-.last-val {
-  font-family:'DM Mono',monospace; font-size:11.5px; color:var(--muted);
-  margin-bottom:8px;
-}
-.last-val strong { color:var(--green); font-weight:500; }
-
+.inp-bottom { display:flex; align-items:center; justify-content:space-between; gap:10px; }
 .inp-row { display:flex; align-items:center; gap:8px; }
+.last-badge {
+  font-family:'DM Mono',monospace; font-size:11px; color:var(--muted);
+  background:var(--bg); border:1px solid var(--border); border-radius:var(--r-sm);
+  padding:6px 10px; white-space:nowrap; line-height:1.5; text-align:right;
+  flex-shrink:0;
+}
+.last-badge strong { color:var(--green); font-weight:500; font-size:13px; display:block; }
 .inp-field {
   background:var(--bg); border:1.5px solid var(--border2); border-radius:var(--r-sm);
   padding:10px 12px; font-size:18px; color:var(--text); font-family:'DM Mono',monospace;
@@ -391,29 +393,31 @@ async function showDay(key) {
     const unit     = ex.type === 'time' ? 'seg' : ex.type === 'reps' ? 'reps' : 'kg';
     const inputmode = ex.type === 'weight' ? 'decimal' : 'numeric';
 
-    const lastHtml = last
-      ? `<div class="last-val">Último: <strong>${last.val} ${unit}</strong> · ${fmtDate(last.date)}</div>`
-      : `<div class="last-val" style="color:var(--muted2)">Primeiro registro</div>`;
+    const lastBadge = last
+      ? `<div class="last-badge"><strong>${last.val} ${unit}</strong>últ. ${fmtDate(last.date)}</div>`
+      : `<div class="last-badge" style="color:var(--muted2)">sem<br>registro</div>`;
 
     html += `
       <div class="ex-card${hasSaved ? ' saved' : ''}" id="excard_${ex.id}">
         <div class="ex-name">${ex.name}</div>
         <div class="ex-spec">${ex.spec}</div>
         ${ex.alert ? `<div class="ex-alert">${ex.alert}</div>` : ''}
-        ${lastHtml}
-        <div class="inp-row">
-          <input
-            type="number"
-            class="inp-field${hasSaved ? ' saved-field' : ''}"
-            id="inp_${ex.id}"
-            placeholder="${unit}"
-            inputmode="${inputmode}"
-            value="${hasSaved ? todayVal : ''}"
-            onblur="autoSave('${ex.id}','${ex.type}',this)"
-            onkeydown="if(event.key==='Enter'){this.blur()}"
-          >
-          <span class="inp-unit">${unit}</span>
-          <span class="saved-hint${hasSaved ? ' show' : ''}" id="hint_${ex.id}">✓ salvo</span>
+        <div class="inp-bottom">
+          <div class="inp-row">
+            <input
+              type="number"
+              class="inp-field${hasSaved ? ' saved-field' : ''}"
+              id="inp_${ex.id}"
+              placeholder="${unit}"
+              inputmode="${inputmode}"
+              value="${hasSaved ? todayVal : ''}"
+              onblur="autoSave('${ex.id}','${ex.type}',this)"
+              onkeydown="if(event.key==='Enter'){this.blur()}"
+            >
+            <span class="inp-unit">${unit}</span>
+            <span class="saved-hint${hasSaved ? ' show' : ''}" id="hint_${ex.id}">✓ salvo</span>
+          </div>
+          ${lastBadge}
         </div>
       </div>`;
   });
