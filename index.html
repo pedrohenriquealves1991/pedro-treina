@@ -240,11 +240,12 @@ const TREINOS = {
   B: {
     label:'TREINO B', diaSemana:'Terça-feira', mob: MOB_DIA2,
     exercicios:[
-      { id:'b_elevacao', name:'Elevação de Pernas na Barra',      type:'reps',   spec:'3×12' },
-      { id:'b_agach',    name:'Agachamento Unipodal no Banco',    type:'weight', spec:'3×10 / perna' },
-      { id:'b_flexora',  name:'Cadeira Flexora',                  type:'weight', spec:'3×12 · bilateral' },
-      { id:'b_remada',   name:'Remada Inclinada com Barra',       type:'weight', spec:'4×8' },
-      { id:'b_desenv',   name:'Desenvolvimento Halteres Sentado', type:'weight', spec:'3×10', alert:'⚠ Amplitude controlada no ombro D.' },
+      { id:'b_elevacao',    name:'Elevação de Pernas na Barra',      type:'reps',   spec:'3×12' },
+      { id:'b_agach',       name:'Agachamento Unipodal no Banco',    type:'weight', spec:'3×10 / perna' },
+      { id:'b_flexora',     name:'Cadeira Flexora',                  type:'weight', spec:'3×12 · bilateral' },
+      { id:'b_remada',      name:'Remada Inclinada com Barra',       type:'weight', spec:'4×8' },
+      { id:'b_desenv',      name:'Desenvolvimento Halteres Sentado', type:'weight', spec:'3×10', alert:'⚠ Amplitude controlada no ombro D.' },
+      { id:'b_panturrilha', name:'Panturrilha em Pé',                type:'weight', spec:'3×15–20' },
     ]
   },
   C: {
@@ -255,6 +256,7 @@ const TREINOS = {
       { id:'c_legpress', name:'Leg Press Bilateral',       type:'weight', spec:'4×10 · não travar joelho D' },
       { id:'c_supino',   name:'Supino Inclinado Máquina',  type:'weight', spec:'3×12' },
       { id:'c_remada',   name:'Remada Sentada Fechada',    type:'weight', spec:'3×12' },
+      { id:'c_facepull', name:'Face Pull com Corda',       type:'weight', spec:'3×15 · carga leve', alert:'⚠ Foco na rotação externa — não force amplitude no ombro D.' },
     ]
   },
   D: {
@@ -262,8 +264,8 @@ const TREINOS = {
     exercicios:[
       { id:'d_abdom_lat', name:'Abdominal Lateral (Oblíquo)',      type:'reps',   spec:'3×12 / lado' },
       { id:'d_ext_iso',   name:'Cadeira Extensora — Isometria',    type:'time',   spec:'2×40s + 3×10 reps', alert:'⚠ Dir: 0°→60° máx.' },
-      { id:'d_elpelvica', name:'Elevação Pélvica com Barra',       type:'weight', spec:'4×10–12' },
       { id:'d_stiff',     name:'Stiff com Barra',                  type:'weight', spec:'4×10' },
+      { id:'d_elpelvica', name:'Elevação Pélvica com Barra',       type:'weight', spec:'4×10–12' },
       { id:'d_lateral',   name:'Levantamento Lateral Halteres',    type:'weight', spec:'3×15' },
     ]
   }
