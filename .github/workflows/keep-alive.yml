@@ -1,0 +1,34 @@
+name: Supabase Keep-Alive
+
+# O plano free do Supabase pausa projetos após 7 dias sem atividade.
+# Este job faz uma requisição leve segunda e quinta (intervalo máximo de 4 dias),
+# garantindo que o banco nunca fique ocioso tempo suficiente para ser pausado.
+
+on:
+  schedule:
+    - cron: '0 12 * * 1,4'
+  workflow_dispatch:
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Supabase REST API
+        env:
+          # Chave publishable (anon) — já é pública no index.html, sem exposição nova.
+          SUPABASE_URL: https://halohgdnnhmgzmnptyil.supabase.co
+          SUPABASE_ANON_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhhbG9oZ2RubmhtZ3ptbnB0eWlsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc5ODI2ODUsImV4cCI6MjA5MzU1ODY4NX0.36jpWxsyNXoKDWNDZDfSTmc8GpS-LfzIQ1NWIjZ-Qvg
+        run: |
+          status=$(curl -sS -o /dev/null -w '%{http_code}' \
+            "$SUPABASE_URL/rest/v1/exercise_logs?select=id&limit=1" \
+            -H "apikey: $SUPABASE_ANON_KEY" \
+            -H "Authorization: Bearer $SUPABASE_ANON_KEY")
+
+          echo "HTTP $status"
+
+          if [ "$status" != "200" ]; then
+            echo "::error::Ping falhou — o banco pode estar pausado ou a chave expirou."
+            exit 1
+          fi
+
+          echo "Banco ativo."
