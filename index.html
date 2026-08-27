@@ -208,65 +208,76 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 // ── TREINO DATA ──
+// Exercícios de fascite plantar — todos os treinos
+const MOB_PLANTAR = [
+  { id:'fp_bola',     text:'🦶 Fascite — Bola de tênis: rolar 1–2 min por pé (calcanhar ao metatarso)' },
+  { id:'fp_halux',    text:'🦶 Fascite — Extensão isolada do hálux: levantar só o dedão, 10×/pé' },
+  { id:'fp_dedos',    text:'🦶 Fascite — Extensão dos dedos com hálux fixo: levantar demais dedos, 10×/pé' },
+  { id:'fp_quad',     text:'🦶 Fascite — Quadrupedia: joelhos no chão, dedos dobrados sob o pé, 30s' },
+  { id:'fp_kneeling', text:'🦶 Fascite — Meio-ajoelhado: dorso do pé apoiado, empurrar joelho à frente, 30s/pé' },
+  { id:'fp_squat',    text:'🦶 Fascite — Squat profundo com hálux no step: 5–8 reps (kettlebell p/ equilíbrio)' },
+];
+
 const MOB_DIA1 = [
-  { id:'m1_1', text:'Mobilidade de braços — rotações e círculos com bastão' },
+  ...MOB_PLANTAR,
+  { id:'m_bracos', text:'Mobilidade de braços com bastão — rotações e círculos' },
   { id:'m1_2', text:'Espaldar — Glúteo (canela paralela à barra, abrindo o quadril)' },
   { id:'m1_3', text:'Espaldar — Panturrilha' },
   { id:'m1_4', text:'Espaldar — Adutor' },
   { id:'m1_5', text:'Espaldar — Posterior de coxa' },
-  { id:'m1_6', text:'Mobilidade de joelho — avanço semi-flexionado + sentar sobre a outra perna' },
+  { id:'m_joelho', text:'🦵 Dobra de joelho — 5 min (anti-fibrose pós-LCA)' },
 ];
 
 const MOB_DIA2 = [
-  { id:'m2_1', text:'Mobilidade de braços — rotações e círculos com bastão' },
+  ...MOB_PLANTAR,
+  { id:'m_bracos', text:'Mobilidade de braços com bastão — rotações e círculos' },
   { id:'m2_2', text:'Espaldar — Glúteo (canela paralela à barra, abrindo o quadril)' },
   { id:'m2_3', text:'Espaldar — Panturrilha' },
   { id:'m2_4', text:'Espaldar — Abertura de pernas sentado' },
   { id:'m2_5', text:'Espaldar — Pernas esticadas sentado, tocando as pontas dos pés' },
-  { id:'m2_6', text:'Mobilidade de joelho — avanço semi-flexionado + sentar sobre a outra perna' },
+  { id:'m_joelho', text:'🦵 Dobra de joelho — 5 min (anti-fibrose pós-LCA)' },
 ];
 
 const TREINOS = {
   A: {
     label:'TREINO A', diaSemana:'Segunda-feira', mob: MOB_DIA1,
     exercicios:[
-      { id:'a_abdom',    name:'Abdominal com Peso',              type:'weight', spec:'3×12–15' },
-      { id:'a_ext_iso',  name:'Cadeira Extensora — Isometria',   type:'time',   spec:'2×40s + 3×10 reps', alert:'⚠ Dir: 0°→60° máx. Esq: amplitude completa.' },
-      { id:'a_legpress', name:'Leg Press Unilateral Esquerdo',   type:'weight', spec:'4×12 · equalização' },
-      { id:'a_supino',   name:'Supino Reto com Barra',           type:'weight', spec:'4×8', alert:'⚠ Pare se sentir dor no ombro D.' },
-      { id:'a_barra',    name:'Barra Fixa',                      type:'reps',   spec:'4×máx' },
+      { id:'a_abdom',    name:'Abdominal com Peso',          type:'weight', spec:'3×12–15' },
+      { id:'a_ext_iso',  name:'Cadeira Extensora — Isometria', type:'time', spec:'2×40s + 3×10 reps', alert:'⚠ Dir: 0°→60° máx. Esq: amplitude completa.' },
+      { id:'a_legpress', name:'Leg Press Bilateral',         type:'weight', spec:'4×12' },
+      { id:'a_supino',   name:'Supino Reto com Barra',       type:'weight', spec:'4×8' },
+      { id:'a_barra',    name:'Barra Fixa',                  type:'reps',   spec:'4×máx' },
     ]
   },
   B: {
     label:'TREINO B', diaSemana:'Terça-feira', mob: MOB_DIA2,
     exercicios:[
-      { id:'b_elevacao',    name:'Elevação de Pernas na Barra',      type:'reps',   spec:'3×12' },
-      { id:'b_agach',       name:'Agachamento Unipodal no Banco',    type:'weight', spec:'3×10 / perna' },
-      { id:'b_flexora',     name:'Cadeira Flexora',                  type:'weight', spec:'3×12 · bilateral' },
-      { id:'b_remada',      name:'Remada Inclinada com Barra',       type:'weight', spec:'4×8' },
-      { id:'b_desenv',      name:'Desenvolvimento Halteres Sentado', type:'weight', spec:'3×10', alert:'⚠ Amplitude controlada no ombro D.' },
-      { id:'b_panturrilha', name:'Panturrilha em Pé',                type:'weight', spec:'3×15–20' },
+      { id:'b_panturrilha', name:'Panturrilha no Step',           type:'weight', spec:'3×15–20 · caneleira sob os dedos' },
+      { id:'b_elevacao',    name:'Elevação de Pernas na Barra',   type:'reps',   spec:'3×12' },
+      { id:'b_agach',       name:'Agachamento Livre com Barra',   type:'weight', spec:'4×8' },
+      { id:'b_flexora',     name:'Cadeira Flexora',               type:'weight', spec:'3×12 · bilateral' },
+      { id:'b_remada',      name:'Remada Inclinada com Barra',    type:'weight', spec:'4×8' },
+      { id:'b_desenv',      name:'Desenvolvimento Halteres Sentado', type:'weight', spec:'3×15–20 · carga leve' },
     ]
   },
   C: {
     label:'TREINO C', diaSemana:'Quinta-feira', mob: MOB_DIA1,
     exercicios:[
-      { id:'c_prancha',  name:'Prancha Frontal',           type:'time',   spec:'3×40s' },
-      { id:'c_dead',     name:'Deadlift Convencional',     type:'weight', spec:'4×6 · carga pesada' },
-      { id:'c_legpress', name:'Leg Press Bilateral',       type:'weight', spec:'4×10 · não travar joelho D' },
-      { id:'c_supino',   name:'Supino Inclinado Máquina',  type:'weight', spec:'3×12' },
-      { id:'c_remada',   name:'Remada Sentada Fechada',    type:'weight', spec:'3×12' },
-      { id:'c_facepull', name:'Face Pull com Corda',       type:'weight', spec:'3×15 · carga leve', alert:'⚠ Foco na rotação externa — não force amplitude no ombro D.' },
+      { id:'c_prancha',  name:'Prancha Frontal',          type:'time',   spec:'3×40s' },
+      { id:'c_dead',     name:'Deadlift Convencional',    type:'weight', spec:'4×6 · carga pesada' },
+      { id:'c_legpress', name:'Leg Press Bilateral',      type:'weight', spec:'4×10 · não travar joelho D' },
+      { id:'c_supino',   name:'Supino Inclinado Máquina', type:'weight', spec:'3×12' },
+      { id:'c_remada',   name:'Remada Sentada Fechada',   type:'weight', spec:'3×12' },
+      { id:'c_facepull', name:'Face Pull com Corda',      type:'weight', spec:'3×15 · carga leve', alert:'⚠ Foco na rotação externa — puxar até a altura dos ouvidos.' },
     ]
   },
   D: {
     label:'TREINO D', diaSemana:'Sexta-feira', mob: MOB_DIA2,
     exercicios:[
-      { id:'d_abdom_lat', name:'Abdominal Lateral (Oblíquo)',      type:'reps',   spec:'3×12 / lado' },
-      { id:'d_ext_iso',   name:'Cadeira Extensora — Isometria',    type:'time',   spec:'2×40s + 3×10 reps', alert:'⚠ Dir: 0°→60° máx.' },
-      { id:'d_stiff',     name:'Stiff com Barra',                  type:'weight', spec:'4×10' },
-      { id:'d_elpelvica', name:'Elevação Pélvica com Barra',       type:'weight', spec:'4×10–12' },
-      { id:'d_lateral',   name:'Levantamento Lateral Halteres',    type:'weight', spec:'3×15' },
+      { id:'d_abdom_lat', name:'Abdominal Lateral (Oblíquo)',   type:'reps',   spec:'3×12 / lado' },
+      { id:'d_stiff',     name:'Stiff com Barra',               type:'weight', spec:'4×10' },
+      { id:'d_elpelvica', name:'Elevação Pélvica com Barra',    type:'weight', spec:'4×10–12' },
+      { id:'d_lateral',   name:'Levantamento Lateral Halteres', type:'weight', spec:'3×20–25 · carga leve' },
     ]
   }
 };
@@ -375,7 +386,7 @@ async function showDay(key) {
       </div>
     </div>
 
-    <div class="sec-title">Alongamento & Mobilidade · 17 min</div>
+    <div class="sec-title">Alongamento & Mobilidade · ~25 min</div>
     <div id="mobList">
       ${T.mob.map(m => `
         <div class="mob-item${checks[m.id] ? ' done' : ''}" id="mob_${m.id}" onclick="toggleMob('${key}','${m.id}')">
