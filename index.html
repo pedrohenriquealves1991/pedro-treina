@@ -247,6 +247,7 @@ const TREINOS = {
   A: {
     label:'TREINO A', diaSemana:'Segunda-feira', foco:'Quadríceps + Empurrar', mob: MOB_FASCITE,
     exercicios:[
+      { id:'a_panturrilha', name:'Panturrilha no Step',                type:'weight', spec:'3×15–20 · caneleira sob os dedos' },
       { id:'a_abdom',    name:'Abdominal com Peso',                    type:'weight', spec:'3×12–15' },
       { id:'a_agach',    name:'Agachamento Livre com Barra',           type:'weight', spec:'4×8' },
       { id:'a_ext_iso',  name:'Cadeira Extensora — Isometria',         type:'weight', spec:'2×45s' },
@@ -281,7 +282,7 @@ const TREINOS = {
       { id:'d_dead',        name:'Deadlift Convencional',      type:'weight', spec:'4×6 · carga pesada' },
       { id:'d_stiff',       name:'Stiff com Barra',            type:'weight', spec:'4×10' },
       { id:'d_elpelvica',   name:'Elevação Pélvica com Barra', type:'weight', spec:'4×10–12' },
-      { id:'d_panturrilha', name:'Panturrilha no Step',        type:'weight', spec:'3×15–20 · caneleira sob os dedos' },
+      { id:'d_abducao',     name:'Abdução de Quadril na Máquina', type:'weight', spec:'3×15 · glúteo médio', alert:'⚠ Pausa de 1s na contração — prevenção de valgo do joelho.' },
     ]
   }
 };
@@ -400,7 +401,7 @@ async function showDay(key) {
       `).join('')}
     </div>
 
-    <div class="sec-title">Exercícios · ~45 min</div>
+    <div class="sec-title">Exercícios · ~${T.exercicios.length * 9} min</div>
   `;
 
   T.exercicios.forEach(ex => {
